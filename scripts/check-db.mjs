@@ -1,0 +1,10 @@
+import { DatabaseSync } from 'node:sqlite';
+const db = new DatabaseSync('data/woodfrog.db');
+const cols = db.prepare('PRAGMA table_info(jira_issues)').all().map(c => c.name);
+console.log('COLUMNS:', JSON.stringify(cols));
+const sample = db.prepare('SELECT issue_key, issue_type, priority, updated_date FROM jira_issues LIMIT 5').all();
+console.log('SAMPLE:', JSON.stringify(sample, null, 2));
+const nulls = db.prepare("SELECT COUNT(*) as c FROM jira_issues WHERE issue_type IS NULL OR issue_type = ''").get();
+console.log('NULL issue_type:', nulls.c);
+const total = db.prepare('SELECT COUNT(*) as c FROM jira_issues').get();
+console.log('TOTAL:', total.c);
